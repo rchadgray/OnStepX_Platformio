@@ -36,8 +36,8 @@ jobs:
           wget https://github.com/Makuna/Rtc/archive/master.zip -O /tmp/rtc_master.zip
           unzip /tmp/rtc_master.zip -d /tmp/
 
-- name: Run PlatformIO
-  run: pio ci path/to/test/file.c --lib="/tmp/OneWire-master" --board=<ID_1> --board=<ID_2> --board=<ID_N>
+#      - name: Run PlatformIO
+#        run: pio ci path/to/test/file.c --lib="/tmp/OneWire-master" --board=<ID_1> --board=<ID_2> --board=<ID_N>
 
       - name: Build
         run: |
