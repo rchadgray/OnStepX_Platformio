@@ -24,6 +24,8 @@ jobs:
           rsync -r  --remove-source-files --exclude=".*" --exclude="platformio.ini"  src/* src/src
           find . -depth -type d -empty -delete
           mv *.h *.ino src/
+      - name: libraries
+        run: pio pkg install --library https://github.com/adafruit/Adafruit_BME280_Library.git
       - name: Build
         run: |
           pio run
