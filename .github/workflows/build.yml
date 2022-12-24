@@ -38,7 +38,7 @@ jobs:
           unzip /tmp/rtc_master.zip -d /tmp/
 
       - name: Run PlatformIO
-        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini
+        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --keep-build-dir
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.1
