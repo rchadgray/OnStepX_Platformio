@@ -38,25 +38,24 @@ jobs:
           unzip /tmp/rtc_master.zip -d /tmp/
 
       - name: Run PlatformIO
-        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="./build"
+        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini
 
 #      - name: Build
 #        run: |
 #          pio run -
 #          ls -laR .
 
-#      - name: Upload a Build Artifact
-#        uses: actions/upload-artifact@v3.1.1
-#        with:
-#          path: .pio/build/esp32dev/firmware.bin
-#      - name: upload linux artifact
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ github.token }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: .pio/build/esp32dev/firmware.bin
-#          asset_name: firmware.bin
-#          asset_content_type: application/zip
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          path: .pio/build/esp32dev/firmware.bin
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .pio/build/esp32dev/firmware.bin
+          asset_name: firmware.bin
+          asset_content_type: application/zip
            
-          
