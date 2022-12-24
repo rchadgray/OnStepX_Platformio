@@ -38,8 +38,7 @@ jobs:
           unzip /tmp/rtc_master.zip -d /tmp/
 
       - name: Run PlatformIO
-        working-directory: ./build
-        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini 
+        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="./build"
 
 #      - name: Build
 #        run: |
