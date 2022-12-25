@@ -31,14 +31,23 @@ jobs:
           pio pkg install --library https://github.com/mikalhart/TinyGPSPlus.git
           pio pkg install --library https://github.com/adafruit/Adafruit_Sensor.git
           pio pkg install --library https://github.com/adafruit/Adafruit_BME280_Library.git
+          pio pkg install --library https://github.com/adafruit/Adafruit_BMP280_Library.git
+          pio pkg install --library https://github.com/hjd1964/OneWire.git
+          pio pkg install --library https://github.com/hjd1964/Arduino-Temperature-Control-Library.git
+          pio pkg install --library https://github.com/hjd1964/Arduino-DS2413GPIO-Control-Library.git
+          pio pkg install --library https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library.git
+          pio pkg install --library https://github.com/adafruit/Adafruit_BusIO.git
+          pio pkg install --library https://github.com/RobTillaart/PCF8575.git
+
+
 
       - name: Install library dependencies
         run: |
           wget https://github.com/Makuna/Rtc/archive/master.zip -O /tmp/rtc_master.zip
-          unzip /tmp/rtc_master.zip -d /tmp/libs
+          unzip /tmp/rtc_master.zip -d /tmp/
 
       - name: Run PlatformIO
-        run: pio ci src/ --lib="/tmp/libs" -c platformio.ini --build-dir="/tmp" --keep-build-dir
+        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="/tmp" --keep-build-dir
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.1
