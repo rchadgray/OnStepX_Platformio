@@ -36,13 +36,12 @@ jobs:
         run: |
           wget https://github.com/Makuna/Rtc/archive/master.zip -O /tmp/rtc_master.zip
           unzip /tmp/rtc_master.zip -d /tmp/
-          mkdir /foo
 
       - name: Run PlatformIO
-        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="/foo" --keep-build-dir
+        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="/tmp" --keep-build-dir
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.1
         with:
-          path: /foo/.pio/build/esp32dev/firmware.bin
+          path: /tmp/.pio/build/esp32dev/firmware.bin
           
