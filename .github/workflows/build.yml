@@ -35,10 +35,10 @@ jobs:
       - name: Install library dependencies
         run: |
           wget https://github.com/Makuna/Rtc/archive/master.zip -O /tmp/rtc_master.zip
-          unzip /tmp/rtc_master.zip -d /tmp/
+          unzip /tmp/rtc_master.zip -d /tmp/libs
 
       - name: Run PlatformIO
-        run: pio ci src/ --lib="/tmp/Rtc-master" -c platformio.ini --build-dir="/tmp" --keep-build-dir
+        run: pio ci src/ --lib="/tmp/libs" -c platformio.ini --build-dir="/tmp" --keep-build-dir
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.1
