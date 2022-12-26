@@ -49,7 +49,7 @@
 // Driver models (Step/Dir and Servo) many have specific requirements so be sure to follow the link below to help learn about these.
 // Typically: A4988, DRV8825, LV8729, S109, TMC2130, TMC5160, TMC2209, etc.
 
-#define AXIS1_DRIVER_MODEL         TMC2209U //    OFF, Enter motor driver model (above) in both axes to activate the mount.    <-Often
+#define AXIS1_DRIVER_MODEL         TMC2209S //    OFF, Enter motor driver model (above) in both axes to activate the mount.    <-Often
 // AXIS1 RA/AZM -------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Axes
 
 // If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
@@ -84,7 +84,7 @@
                                           //         |THLD(n) Where n=1..1023 (ADU) for Analog threshold.
                                           //         |HYST(n) Where n=0..1023 (ADU) for +/- Hystersis range.
 
-#define AXIS2_DRIVER_MODEL         TMC2209U //    OFF, Enter motor driver model (above) in both axes to activate the mount.    <-Often
+#define AXIS2_DRIVER_MODEL         TMC2209S //    OFF, Enter motor driver model (above) in both axes to activate the mount.    <-Often
 // AXIS2 DEC/ALT ------------------------------------------------------- see https://onstep.groups.io/g/main/wiki/Configuration_Axes
 
 // If runtime axis settings are enabled changes in the section below may be ignored unless you reset to defaults:
