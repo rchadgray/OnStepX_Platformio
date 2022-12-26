@@ -39,11 +39,6 @@ jobs:
           pio pkg install --library https://github.com/adafruit/Adafruit_BusIO.git
           pio pkg install --library https://github.com/RobTillaart/PCF8575.git
 
-          pio pkg install --library https://github.com/hjd1964/Arduino-PID-Library.git
-          pio pkg install --library https://github.com/hjd1964/TMC2209.git
-          pio pkg install --library https://github.com/teemuatlut/TMCStepper.git
-
-
 
 
       - name: Install library dependencies
