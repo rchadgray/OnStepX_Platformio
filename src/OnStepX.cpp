@@ -47,17 +47,17 @@
 #define FirmwareVersionPatch        "g"    // for example major.minor patch: 10.03c
 #define FirmwareVersionConfig       6      // internal, for tracking configuration file changes
 
-#include "src/Common.h"
-#include "src/Validate.h"
-#include "src/lib/nv/Nv.h"
-#include "src/lib/analog/Analog.h"
-#include "src/lib/sense/Sense.h"
-#include "src/lib/tasks/OnTask.h"
+#include "Common.h"
+#include "Validate.h"
+#include "lib/nv/Nv.h"
+#include "lib/analog/Analog.h"
+#include "lib/sense/Sense.h"
+#include "lib/tasks/OnTask.h"
 
-#include "src/telescope/Telescope.h"
+#include "telescope/Telescope.h"
 extern Telescope telescope;
 
-#include "src/plugins/Plugins.config.h"
+#include "plugins/Plugins.config.h"
 
 #if DEBUG == PROFILER
   extern void profiler();
