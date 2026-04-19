@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include "Constants.h"
 #include "lib/Constants.h"
-#include "Config.h"
+#include "../Config.h"
 #include "Config.defaults.h"
 
 #ifdef USES_HW_SPI
@@ -19,7 +19,7 @@
 #include "HAL/HAL.h"
 #include "lib/Macros.h"
 #include "pinmaps/Models.h"
-#include "lib/debug/Debug.h"
+#include "lib/debug_onstep/Debug.h"
 
 #if ST4_HAND_CONTROL == ON
   #define SERIAL_ST4_MASTER ON
