@@ -8,64 +8,93 @@ on:
   workflow_dispatch: # Allows you to trigger the build manually from the GitHub UI
 
 jobs:
-  build:
+  # This first job determines which MCU to build for based on the PINMAP setting.
+  determine_mcu:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Add all environments you want to build for here
-        environment: [esp32, teensy41]
-
+    outputs:
+      mcu_target: ${{ steps.check_pinmap.outputs.mcu }}
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Check PINMAP setting in Config.h
+        id: check_pinmap
+        run: |
+          if grep -q "MaxPCB4" src/Config.h; then
+            echo "Target MCU is Teensy"
+            echo "mcu=teensy" >> $GITHUB_OUTPUT
+          elif grep -q "MaxESP4" src/Config.h; then
+            echo "Target MCU is ESP32"
+            echo "mcu=esp32" >> $GITHUB_OUTPUT
+          else
+            echo "No specific MCU target found, skipping builds."
+            echo "mcu=none" >> $GITHUB_OUTPUT
+          fi
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    - name: Install PlatformIO
-      run: |
-        python -m pip install --upgrade pip
-        pip install --upgrade platformio
-
-    - name: Build Firmware
-      run: pio run -e ${{ matrix.environment }}
-
-    - name: Prepare Artifact Files
-      run: |
-        mkdir -p release_files
-        if [ "${{ matrix.environment }}" == "esp32" ]; then
+  # This job will ONLY run if the 'determine_mcu' job outputs 'esp32'
+  build_esp32:
+    needs: determine_mcu
+    if: needs.determine_mcu.outputs.mcu_target == 'esp32'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+      - name: Build ESP32 Firmware
+        run: pio run -e esp32
+      - name: Prepare Artifact Files
+        run: |
+          mkdir -p release_files
           cp .pio/build/esp32/merged-firmware.bin release_files/firmware-factory.bin
-          echo "OnStepX Firmware (ESP32)" > release_files/Instructions.txt
-        elif [ "${{ matrix.environment }}" == "teensy41" ]; then
-          cp .pio/build/teensy41/firmware.hex release_files/firmware.hex
-          echo "OnStepX Firmware (Teensy)" > release_files/Instructions.txt
-        fi
-        
-        # Common instructions for all artifacts
-        echo "===================================" >> release_files/Instructions.txt
-        echo "" >> release_files/Instructions.txt
-        echo "To flash this firmware, please visit the official Web Tools page:" >> release_files/Instructions.txt
-        echo "https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html" >> release_files/Instructions.txt
-
-    - name: Add Job Summary
-      run: |
-        echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-        echo "Your custom firmware for **${{ matrix.environment }}** is ready." >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
-        echo "1. Download the **firmware-${{ matrix.environment }}** artifact below and extract the \`.zip\` file." >> $GITHUB_STEP_SUMMARY
-        if [ "${{ matrix.environment }}" == "esp32" ]; then
+      - name: Add Job Summary
+        run: |
+          echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **ESP32** is ready." >> $GITHUB_STEP_SUMMARY
           echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
           echo "3. Select the \`firmware-factory.bin\` file and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
-        elif [ "${{ matrix.environment }}" == "teensy41" ]; then
-          echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`firmware.hex\` file." >> $GITHUB_STEP_SUMMARY
-        fi
+      - name: Upload Firmware Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-esp32
+          path: release_files/*
+          if-no-files-found: error
 
-    - name: Upload Firmware Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: firmware-${{ matrix.environment }}
-        path: release_files/*
-        if-no-files-found: error
+  # This job will ONLY run if the 'determine_mcu' job outputs 'teensy'
+  build_teensy:
+    needs: determine_mcu
+    if: needs.determine_mcu.outputs.mcu_target == 'teensy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+      - name: Build Teensy Firmware
+        run: pio run -e teensy41
+      - name: Prepare Artifact Files
+        run: |
+          mkdir -p release_files
+          cp .pio/build/teensy41/firmware.hex release_files/firmware.hex
+      - name: Add Job Summary
+        run: |
+          echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **Teensy** is ready." >> $GITHUB_STEP_SUMMARY
+          echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`firmware.hex\` file." >> $GITHUB_STEP_SUMMARY
+      - name: Upload Firmware Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-teensy41
+          path: release_files/*
+          if-no-files-found: error
