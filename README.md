@@ -1,4 +1,4 @@
-# How to Create a Custom Firmware Build (No-Code Workflow)
+# How to Create a Custom OnStepX Firmware Build (No-Code Workflow)
 
 This repository is set up with a "Cloud Compiler" that lets you create a personalized firmware for your OnStepX controller without installing any software. All you need is a free GitHub account.
 
@@ -14,30 +14,40 @@ In your new forked repository, go to the **"Actions"** tab. You will see a messa
 
 ### Step 3: Edit Your Configuration
 
-1.  Navigate to the `src/` folder and click on the **`Config.h`** file. You can also edit `Extended.config.h` if needed.
+1.  Navigate to the `src/` folder and click on the **`Config.h`** file.
 2.  Click the **pencil icon** (✏️) in the top-right corner of the file viewer to edit the file.
-3.  Make your desired changes. For example, change the `#define PINMAP` to match your specific hardware.
-4.  Once you are done, click the green **"Commit changes..."** button at the top-right. You can leave the default commit message.
+3.  Make your desired changes. For example, change the `#define PINMAP` to match your specific hardware (e.g., `MaxESP4` for an ESP32 build or `MaxPCB4` for a Teensy build).
+4.  Once you are done, click the green **"Commit changes..."** button at the top-right.
 
 ### Step 4: Download Your Firmware
 
-Committing the change automatically triggers the build process!
+Committing the change automatically triggers the correct build process based on your `PINMAP` selection.
 
-1.  Click on the **"Actions"** tab again. You will see a workflow running with the name of your commit (e.g., "Update Config.h").
+1.  Click on the **"Actions"** tab again. You will see a workflow running.
 2.  Wait for the process to complete (it usually takes 1-2 minutes). When it is done, a green checkmark (✅) will appear.
 3.  Click on the completed workflow's name to go to the summary page.
-4.  On the summary page, you will find a **Job Summary** with instructions and a link to the web flasher.
-5.  Scroll to the bottom of the page to the **"Artifacts"** section. You will see a file named `firmware-esp32`.
-6.  Click the **download icon** to download the `firmware-esp32.zip` file.
+4.  Scroll to the bottom of the page to the **"Artifacts"** section. You will see a file named `firmware-esp32` or `firmware-teensy41`.
+5.  Click the **download icon** to download the `.zip` file.
 
 ### Step 5: Flash Your Firmware
 
-1.  Unzip the downloaded file. It will contain a single file named `firmware-factory.bin`.
-2.  Go to the **[OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)**.
-3.  Select the `firmware-factory.bin` file you just extracted.
-4.  Follow the on-screen instructions to connect to your ESP32 and flash the firmware.
+Unzip the downloaded file and follow the instructions for your specific MCU.
 
-That's it! If the main OnStepX code is ever updated, you will see a banner on your fork telling you it's behind. Just click **"Sync fork"** and the process will run again, giving you a new `.bin` file with all the latest updates.
+**For ESP32 Builds (`firmware-factory.bin`):**
+
+1.  Go to the **[OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)**.
+2.  Select the `firmware-factory.bin` file you just extracted.
+3.  Follow the on-screen instructions to connect to your ESP32 and flash the firmware.
+
+**For Teensy Builds (`firmware.hex`):**
+
+1.  Download and install the **[Teensy Loader Application](https://www.pjrc.com/teensy/loader.html)** for your operating system.
+2.  Open the Teensy Loader application.
+3.  With your Teensy board plugged in, press the physical button on the Teensy to put it into programming mode.
+4.  In the Teensy Loader, go to `File > Open HEX File` and select the `firmware.hex` file you extracted.
+5.  Click the "Program" button (the green down arrow) to flash the firmware.
+
+That's it! If the main OnStepX code is ever updated, you will see a banner on your fork telling you it's behind. Just click **"Sync fork"** and the process will run again, giving you a new firmware file with all the latest updates.
 
 ---
 
