@@ -2,7 +2,7 @@ name: Build OnStepX Firmware
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "**" ] # Runs on every push to ANY branch
   pull_request:
     branches: [ main, master ]
   workflow_dispatch: # Allows you to trigger the build manually from the GitHub UI
