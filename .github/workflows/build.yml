@@ -19,7 +19,7 @@ jobs:
       - name: Check PINMAP setting in Config.h
         id: check_pinmap
         run: |
-          if grep -q "^#define PINMAP[[:space:]]*MaxPCB4" src/Config.h; then
+          if grep -E -q "^#define PINMAP[[:space:]]*(MaxPCB4|MiniPCB|MiniPCB2)" src/Config.h; then
             echo "Target MCU is Teensy"
             echo "mcu=teensy" >> $GITHUB_OUTPUT
           elif grep -q "^#define PINMAP[[:space:]]*MaxESP4" src/Config.h; then
