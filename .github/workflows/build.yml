@@ -42,7 +42,7 @@ jobs:
         echo "===================================" >> release_files/Instructions.txt
         echo "" >> release_files/Instructions.txt
         echo "To flash this firmware to your ESP32, please visit the official Web Tools page:" >> release_files/Instructions.txt
-        echo "https://graydigitalarts.com/OnStep-Web-Tools/" >> release_files/Instructions.txt
+        echo "https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html" >> release_files/Instructions.txt
         echo "" >> release_files/Instructions.txt
         echo "Select the 'firmware-factory.bin' file included in this folder to upload it to your MCU." >> release_files/Instructions.txt
 
@@ -53,7 +53,7 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "#### How to flash your ESP32:" >> $GITHUB_STEP_SUMMARY
         echo "1. Download the **firmware-${{ matrix.environment }}** artifact below and extract the \`.zip\` file." >> $GITHUB_STEP_SUMMARY
-        echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/)." >> $GITHUB_STEP_SUMMARY
+        echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
         echo "3. Select the \`firmware-factory.bin\` file and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
 
     - name: Upload Firmware Artifact
