@@ -46,6 +46,16 @@ jobs:
         echo "" >> release_files/Instructions.txt
         echo "Select the 'firmware-factory.bin' file included in this folder to upload it to your MCU." >> release_files/Instructions.txt
 
+    - name: Add Job Summary
+      run: |
+        echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
+        echo "Your custom firmware for **${{ matrix.environment }}** is ready." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "#### How to flash your ESP32:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Download the **firmware-${{ matrix.environment }}** artifact below and extract the \`.zip\` file." >> $GITHUB_STEP_SUMMARY
+        echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/)." >> $GITHUB_STEP_SUMMARY
+        echo "3. Select the \`firmware-factory.bin\` file and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
+
     - name: Upload Firmware Artifact
       uses: actions/upload-artifact@v4
       with:
