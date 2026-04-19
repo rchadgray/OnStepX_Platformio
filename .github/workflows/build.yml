@@ -4,13 +4,12 @@ on:
   repository_dispatch:
     types: [build-onstepx]
   push:
-    branches: [ "**" ] # Runs on every push to ANY branch
+    branches: [ "**" ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # Allows you to trigger the build manually from the GitHub UI
+  workflow_dispatch:
 
 jobs:
-  # This first job determines which MCU to build for based on the PINMAP setting.
   determine_mcu:
     runs-on: ubuntu-latest
     outputs:
@@ -19,16 +18,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # -- NEW STEP --
-      # This step runs ONLY for builds triggered by the web uploader.
-      # It takes the file content from the event and writes it to the correct location.
       - name: Create Config Files from Web UI Payload
         if: github.event_name == 'repository_dispatch'
+        env:
+          CONFIG_H_CONTENT: ${{ github.event.client_payload.config_h }}
+          EXTENDED_CONFIG_H_CONTENT: ${{ github.event.client_payload.extended_config_h }}
         run: |
           echo "Creating configuration files from dispatch payload..."
-          echo "${{ github.event.client_payload.config_h }}" > src/Config.h
-          if [[ -n "${{ github.event.client_payload.extended_config_h }}" ]]; then
-            echo "${{ github.event.client_payload.extended_config_h }}" > src/extended.config.h
+          echo "$CONFIG_H_CONTENT" > src/Config.h
+          if [[ -n "$EXTENDED_CONFIG_H_CONTENT" ]]; then
+            echo "$EXTENDED_CONFIG_H_CONTENT" > src/extended.config.h
             echo "extended.config.h created."
           fi
           echo "Config.h created."
@@ -47,7 +46,6 @@ jobs:
             echo "mcu=none" >> $GITHUB_OUTPUT
           fi
 
-  # This job will ONLY run if the 'determine_mcu' job outputs 'esp32'
   build_esp32:
     needs: determine_mcu
     if: needs.determine_mcu.outputs.mcu_target == 'esp32'
@@ -56,15 +54,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # -- NEW STEP --
-      # This step must also be added here to ensure the files are present for this specific job.
       - name: Create Config Files from Web UI Payload
         if: github.event_name == 'repository_dispatch'
+        env:
+          CONFIG_H_CONTENT: ${{ github.event.client_payload.config_h }}
+          EXTENDED_CONFIG_H_CONTENT: ${{ github.event.client_payload.extended_config_h }}
         run: |
           echo "Creating configuration files from dispatch payload..."
-          echo "${{ github.event.client_payload.config_h }}" > src/Config.h
-          if [[ -n "${{ github.event.client_payload.extended_config_h }}" ]]; then
-            echo "${{ github.event.client_payload.extended_config_h }}" > src/extended.config.h
+          echo "$CONFIG_H_CONTENT" > src/Config.h
+          if [[ -n "$EXTENDED_CONFIG_H_CONTENT" ]]; then
+            echo "$EXTENDED_CONFIG_H_CONTENT" > src/extended.config.h
             echo "extended.config.h created."
           fi
           echo "Config.h created."
@@ -96,7 +95,6 @@ jobs:
           path: release_files/*
           if-no-files-found: error
 
-  # This job will ONLY run if the 'determine_mcu' job outputs 'teensy'
   build_teensy:
     needs: determine_mcu
     if: needs.determine_mcu.outputs.mcu_target == 'teensy'
@@ -105,15 +103,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # -- NEW STEP --
-      # This step must also be added here to ensure the files are present for this specific job.
       - name: Create Config Files from Web UI Payload
         if: github.event_name == 'repository_dispatch'
+        env:
+          CONFIG_H_CONTENT: ${{ github.event.client_payload.config_h }}
+          EXTENDED_CONFIG_H_CONTENT: ${{ github.event.client_payload.extended_config_h }}
         run: |
           echo "Creating configuration files from dispatch payload..."
-          echo "${{ github.event.client_payload.config_h }}" > src/Config.h
-          if [[ -n "${{ github.event.client_payload.extended_config_h }}" ]]; then
-            echo "${{ github.event.client_payload.extended_config_h }}" > src/extended.config.h
+          echo "$CONFIG_H_CONTENT" > src/Config.h
+          if [[ -n "$EXTENDED_CONFIG_H_CONTENT" ]]; then
+            echo "$EXTENDED_CONFIG_H_CONTENT" > src/extended.config.h
             echo "extended.config.h created."
           fi
           echo "Config.h created."
