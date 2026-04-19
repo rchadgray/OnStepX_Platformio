@@ -36,6 +36,15 @@ jobs:
       run: |
         mkdir -p release_files
         cp .pio/build/${{ matrix.environment }}/merged-firmware.bin release_files/firmware-factory.bin
+        
+        # Create an instructions file for the user
+        echo "OnStepX Firmware Successfully Built!" > release_files/Instructions.txt
+        echo "===================================" >> release_files/Instructions.txt
+        echo "" >> release_files/Instructions.txt
+        echo "To flash this firmware to your ESP32, please visit the official Web Tools page:" >> release_files/Instructions.txt
+        echo "https://graydigitalarts.com/OnStep-Web-Tools/" >> release_files/Instructions.txt
+        echo "" >> release_files/Instructions.txt
+        echo "Select the 'firmware-factory.bin' file included in this folder to upload it to your MCU." >> release_files/Instructions.txt
 
     - name: Upload Firmware Artifact
       uses: actions/upload-artifact@v4
