@@ -35,10 +35,7 @@ jobs:
     - name: Prepare Artifact Files
       run: |
         mkdir -p release_files
-        cp .pio/build/${{ matrix.environment }}/firmware.bin release_files/
-        # Also copy the bootloader and partitions (these names vary slightly by framework, but usually live here)
-        cp .pio/build/${{ matrix.environment }}/bootloader.bin release_files/ || true
-        cp .pio/build/${{ matrix.environment }}/partitions.bin release_files/ || true
+        cp .pio/build/${{ matrix.environment }}/merged-firmware.bin release_files/firmware-factory.bin
 
     - name: Upload Firmware Artifact
       uses: actions/upload-artifact@v4
