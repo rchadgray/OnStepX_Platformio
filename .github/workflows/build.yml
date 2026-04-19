@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # You can add 'teensy41' or other environments here as you expand
-        environment: [esp32]
+        # Add all environments you want to build for here
+        environment: [esp32, teensy41]
 
     steps:
     - name: Checkout Repository
@@ -35,26 +35,33 @@ jobs:
     - name: Prepare Artifact Files
       run: |
         mkdir -p release_files
-        cp .pio/build/${{ matrix.environment }}/merged-firmware.bin release_files/firmware-factory.bin
+        if [ "${{ matrix.environment }}" == "esp32" ]; then
+          cp .pio/build/esp32/merged-firmware.bin release_files/firmware-factory.bin
+          echo "OnStepX Firmware (ESP32)" > release_files/Instructions.txt
+        elif [ "${{ matrix.environment }}" == "teensy41" ]; then
+          cp .pio/build/teensy41/firmware.hex release_files/firmware.hex
+          echo "OnStepX Firmware (Teensy)" > release_files/Instructions.txt
+        fi
         
-        # Create an instructions file for the user
-        echo "OnStepX Firmware Successfully Built!" > release_files/Instructions.txt
+        # Common instructions for all artifacts
         echo "===================================" >> release_files/Instructions.txt
         echo "" >> release_files/Instructions.txt
-        echo "To flash this firmware to your ESP32, please visit the official Web Tools page:" >> release_files/Instructions.txt
+        echo "To flash this firmware, please visit the official Web Tools page:" >> release_files/Instructions.txt
         echo "https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html" >> release_files/Instructions.txt
-        echo "" >> release_files/Instructions.txt
-        echo "Select the 'firmware-factory.bin' file included in this folder to upload it to your MCU." >> release_files/Instructions.txt
 
     - name: Add Job Summary
       run: |
         echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
         echo "Your custom firmware for **${{ matrix.environment }}** is ready." >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "#### How to flash your ESP32:" >> $GITHUB_STEP_SUMMARY
+        echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
         echo "1. Download the **firmware-${{ matrix.environment }}** artifact below and extract the \`.zip\` file." >> $GITHUB_STEP_SUMMARY
-        echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
-        echo "3. Select the \`firmware-factory.bin\` file and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
+        if [ "${{ matrix.environment }}" == "esp32" ]; then
+          echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
+          echo "3. Select the \`firmware-factory.bin\` file and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ matrix.environment }}" == "teensy41" ]; then
+          echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`firmware.hex\` file." >> $GITHUB_STEP_SUMMARY
+        fi
 
     - name: Upload Firmware Artifact
       uses: actions/upload-artifact@v4
