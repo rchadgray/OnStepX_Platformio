@@ -11,6 +11,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  DOWNLOAD_URL_BASE: 'https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder'
 
 jobs:
   determine_mcu:
@@ -136,7 +137,7 @@ jobs:
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Public Download" >> $GITHUB_STEP_SUMMARY
           echo "Your firmware has been uploaded to the OnStepX Web Tools site." >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here to download $FIRMWARE_NAME](https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL_BASE }}/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
@@ -205,4 +206,4 @@ jobs:
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Public Download" >> $GITHUB_STEP_SUMMARY
           echo "Your firmware has been uploaded to the OnStepX Web Tools site." >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here to download $FIRMWARE_NAME](https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL_BASE }}/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
