@@ -125,7 +125,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22 # Default SSH port
+          port: 2233 # Custom SSH port
           source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
           target: "${{ secrets.REMOTE_PATH }}"
 
@@ -194,7 +194,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22 # Default SSH port
+          port: 2233 # Custom SSH port
           source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
           target: "${{ secrets.REMOTE_PATH }}"
 
