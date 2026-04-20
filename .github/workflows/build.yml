@@ -98,6 +98,15 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
           echo "3. Select the \`firmware-factory.bin\` file (from the .zip) and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
+      - name: Upload to Public URL and Add to Summary
+        run: |
+          PUBLIC_URL=$(curl -fsSL --upload-file release_files/firmware-factory.bin https://transfer.sh/firmware-factory.bin)
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### Public Download Link (Expires in 14 days)" >> $GITHUB_STEP_SUMMARY
+          echo "Anyone can use this link to download the firmware without logging into GitHub:" >> $GITHUB_STEP_SUMMARY
+          echo "**[$PUBLIC_URL]($PUBLIC_URL)**" >> $GITHUB_STEP_SUMMARY
+
       - name: Upload Firmware Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -153,6 +162,15 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`firmware.hex\` file (from the .zip)." >> $GITHUB_STEP_SUMMARY
+      - name: Upload to Public URL and Add to Summary
+        run: |
+          PUBLIC_URL=$(curl -fsSL --upload-file release_files/firmware.hex https://transfer.sh/firmware.hex)
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### Public Download Link (Expires in 14 days)" >> $GITHUB_STEP_SUMMARY
+          echo "Anyone can use this link to download the firmware without logging into GitHub:" >> $GITHUB_STEP_SUMMARY
+          echo "**[$PUBLIC_URL]($PUBLIC_URL)**" >> $GITHUB_STEP_SUMMARY
+
       - name: Upload Firmware Artifact
         uses: actions/upload-artifact@v4
         with:
