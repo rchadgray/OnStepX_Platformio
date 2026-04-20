@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       mcu_target: ${{ steps.check_pinmap.outputs.mcu }}
+      pinmap_name: ${{ steps.check_pinmap.outputs.pinmap }}
+      animal_name: ${{ steps.generate_name.outputs.animal_name }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -38,6 +40,10 @@ jobs:
       - name: Check PINMAP setting in Config.h
         id: check_pinmap
         run: |
+          # Extract PINMAP name
+          PINMAP=$(grep "^#define PINMAP" src/Config.h | awk '{print $3}')
+          echo "pinmap=$PINMAP" >> $GITHUB_OUTPUT
+          
           if grep -E -q "^#define PINMAP[[:space:]]*(MaxPCB4|MiniPCB|MiniPCB2)" src/Config.h; then
             echo "Target MCU is Teensy"
             echo "mcu=teensy" >> $GITHUB_OUTPUT
@@ -48,6 +54,19 @@ jobs:
             echo "No specific MCU target found, skipping builds."
             echo "mcu=none" >> $GITHUB_OUTPUT
           fi
+
+      - name: Generate Random Adjective-Animal Name
+        id: generate_name
+        run: |
+          ADJECTIVES=("swift" "bright" "mighty" "quick" "brave" "clever" "bold" "keen" "nimble" "fierce" "sleek" "wild" "smart" "strong" "sharp" "swift" "brilliant" "cosmic" "dancing" "electric" "fantastic" "glowing" "hidden" "icy" "jolly")
+          ANIMALS=("eagle" "tiger" "phoenix" "dragon" "wolf" "falcon" "lion" "cobra" "shark" "panda" "otter" "lynx" "raven" "fox" "elk" "stag" "viper" "mantis" "owl" "hare")
+          
+          RANDOM_ADJ=${ADJECTIVES[$((RANDOM % ${#ADJECTIVES[@]}))]}
+          RANDOM_ANIMAL=${ANIMALS[$((RANDOM % ${#ANIMALS[@]}))]}
+          ANIMAL_NAME="$RANDOM_ADJ-$RANDOM_ANIMAL"
+          
+          echo "animal_name=$ANIMAL_NAME" >> $GITHUB_OUTPUT
+          echo "Generated firmware name: $ANIMAL_NAME"
 
   build_esp32:
     needs: determine_mcu
@@ -84,7 +103,9 @@ jobs:
       - name: Prepare Artifact Files
         run: |
           mkdir -p release_files
-          cp .pio/build/esp32/merged-firmware.bin release_files/firmware-factory.bin
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          echo "FIRMWARE_NAME=$FIRMWARE_NAME" >> $GITHUB_ENV
+          cp .pio/build/esp32/merged-firmware.bin "release_files/$FIRMWARE_NAME"
       - name: Add Job Summary
         run: |
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
@@ -98,12 +119,24 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
           echo "3. Select the \`firmware-factory.bin\` file (from the .zip) and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
-      - name: Upload Firmware Artifact
-        uses: actions/upload-artifact@v4
+      - name: Securely copy file to web server
+        uses: appleboy/scp-action@v1.0.0
         with:
-          name: firmware-esp32
-          path: release_files/*
-          if-no-files-found: error
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22 # Default SSH port
+          source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          target: "${{ secrets.REMOTE_PATH }}"
+
+      - name: Update Job Summary with Public URL
+        run: |
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Public Download" >> $GITHUB_STEP_SUMMARY
+          echo "Your firmware has been uploaded to the OnStepX Web Tools site." >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download $FIRMWARE_NAME](https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
@@ -140,7 +173,9 @@ jobs:
       - name: Prepare Artifact Files
         run: |
           mkdir -p release_files
-          cp .pio/build/teensy41/firmware.hex release_files/firmware.hex
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
+          echo "FIRMWARE_NAME=$FIRMWARE_NAME" >> $GITHUB_ENV
+          cp .pio/build/teensy41/firmware.hex "release_files/$FIRMWARE_NAME"
       - name: Add Job Summary
         run: |
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
@@ -153,9 +188,21 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`firmware.hex\` file (from the .zip)." >> $GITHUB_STEP_SUMMARY
-      - name: Upload Firmware Artifact
-        uses: actions/upload-artifact@v4
+      - name: Securely copy file to web server
+        uses: appleboy/scp-action@v1.0.0
         with:
-          name: firmware-teensy41
-          path: release_files/*
-          if-no-files-found: error
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22 # Default SSH port
+          source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
+          target: "${{ secrets.REMOTE_PATH }}"
+
+      - name: Update Job Summary with Public URL
+        run: |
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Public Download" >> $GITHUB_STEP_SUMMARY
+          echo "Your firmware has been uploaded to the OnStepX Web Tools site." >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download $FIRMWARE_NAME](https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder/$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
