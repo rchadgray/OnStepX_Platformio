@@ -11,7 +11,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  DOWNLOAD_URL_BASE: 'https://graydigitalarts.com/OnStep-Web-Tools/OnStepX-Builder'
+  DOWNLOAD_URL_BASE: 'https://GrayDigitalArts.com/OnStep-Web-Tools/OnStepX-Builder'
 
 jobs:
   determine_mcu:
@@ -129,6 +129,7 @@ jobs:
           port: 2233 # Custom SSH port
           source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
           target: "${{ secrets.REMOTE_PATH }}"
+          strip_components: 1
 
       - name: Update Job Summary with Public URL
         run: |
@@ -198,6 +199,7 @@ jobs:
           port: 2233 # Custom SSH port
           source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
           target: "${{ secrets.REMOTE_PATH }}"
+          strip_components: 1
 
       - name: Update Job Summary with Public URL
         run: |
