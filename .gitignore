@@ -15,3 +15,6 @@ z.*
 # PlatformIO
 .pio/
 .venv/
+
+# macOS
+.DS_Store
