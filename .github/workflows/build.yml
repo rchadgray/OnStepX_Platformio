@@ -126,13 +126,13 @@ jobs:
         run: |
           FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}.bin"
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-          echo "Your custom OnStepX firmware for **ESP32** named $FIRMWARE_NAME is ready. You can download it or flash it to your ESP32." >> $GITHUB_STEP_SUMMARY
+          echo "Your custom OnStepX firmware for **ESP32** named \`$FIRMWARE_NAME\` is ready. You can download it or flash it to your ESP32." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)** to download the file $FIRMWARE_NAME  (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)** to download the file \`$FIRMWARE_NAME\` (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo 'OR' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here](${{ env.BUILDER_URL }}$FIRMWARE_NAME)** to go to the web tools builder and flash the file $FIRMWARE_NAME to your ESP32" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here](${{ env.BUILDER_URL }}$FIRMWARE_NAME)** to go to the web tools builder and flash the file \`$FIRMWARE_NAME\` to your ESP32" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
@@ -188,7 +188,7 @@ jobs:
         run: |
           FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-          echo "Your custom firmware for **Teensy** is ready." >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **Teensy** named \`$FIRMWARE_NAME\` is ready." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
           echo "1. **Download the artifact** named \`$FIRMWARE_NAME\` below. (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
