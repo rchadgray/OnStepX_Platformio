@@ -126,14 +126,13 @@ jobs:
         run: |
           FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}.bin"
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-          echo "Your custom firmware for **ESP32** is ready." >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **ESP32** is ready. $FIRMWARE_NAME" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here to download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download the firmware](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)** $FIRMWARE_NAME" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo 'OR' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here to flash $FIRMWARE_NAME to your ESP32](${{ env.BUILDER_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to flash the firmware](${{ env.BUILDER_URL }}$FIRMWARE_NAME)** $FIRMWARE_NAME to your ESP32" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
