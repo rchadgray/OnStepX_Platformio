@@ -193,7 +193,7 @@ jobs:
           echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
           echo "1. **Download the artifact** named \`$FIRMWARE_NAME\` below." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "2. **[$FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "2. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`$FIRMWARE_NAME\` file." >> $GITHUB_STEP_SUMMARY
+          echo "3. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to open and flash the \`$FIRMWARE_NAME\` file." >> $GITHUB_STEP_SUMMARY
 
