@@ -13,6 +13,8 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
   DOWNLOAD_URL_BASE: 'https://GrayDigitalArts.com/OnStepX-Builder/?url='
   DOWNLOAD_URL_BASE_TEENSY: 'https://GrayDigitalArts.com/OnStepX-Builder/bin/'
+  BUILDER_URL: 'https://GrayDigitalArts.com/OnStepX-Builder/?url='
+  DOWNLOAD_URL: 'https://GrayDigitalArts.com/OnStepX-Builder/bin/'
 
 jobs:
   determine_mcu:
@@ -105,22 +107,10 @@ jobs:
       - name: Prepare Artifact Files
         run: |
           mkdir -p release_files
-          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}.bin"
           echo "FIRMWARE_NAME=$FIRMWARE_NAME" >> $GITHUB_ENV
           cp .pio/build/esp32/merged-firmware.bin "release_files/$FIRMWARE_NAME"
-      - name: Add Job Summary
-        run: |
-          echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-          echo "Your custom firmware for **ESP32** is ready." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
-          echo "1. **Download the artifact** named \`firmware-esp32\` below. It may take a moment for the file to appear." >> $GITHUB_STEP_SUMMARY
-          echo '```diff' >> $GITHUB_STEP_SUMMARY
-          echo '- Note: If you do not see the artifact download link, please refresh this page.' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "2. Go to the [OnStepX Web Flasher](https://graydigitalarts.com/OnStep-Web-Tools/custom-flasher.html)." >> $GITHUB_STEP_SUMMARY
-          echo "3. Select the \`firmware-factory.bin\` file (from the .zip) and click **Connect and Flash**." >> $GITHUB_STEP_SUMMARY
+
       - name: Securely copy file to web server
         uses: appleboy/scp-action@v1.0.0
         with:
@@ -128,18 +118,22 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2233 # Custom SSH port
-          source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          source: "release_files/${{ needs.determine_mcu.outputs.animal_name }}.bin"
           target: "${{ secrets.REMOTE_PATH }}"
           strip_components: 1
 
-      - name: Update Job Summary with Public URL
+      - name: Add Job Summary
         run: |
-          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-factory.bin"
+          FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}.bin"
+          echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **ESP32** is ready." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "### 🚀 Public Download" >> $GITHUB_STEP_SUMMARY
-          echo "Your firmware has been uploaded to the OnStepX Web Tools site." >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here to download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL_BASE }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
+          echo "**[Click here to download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo 'OR' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo ""**[Click here to flash the firmware to your ESP32](${{ env.BUILDER_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
