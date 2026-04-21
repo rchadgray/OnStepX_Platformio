@@ -132,7 +132,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo 'OR' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**[Click here](${{ env.BUILDER_URL }}$FIRMWARE_NAME)** to go to the web tools builder and flash the file \`$FIRMWARE_NAME\` to your ESP32" >> $GITHUB_STEP_SUMMARY
+          echo "**<a href=\"${{ env.BUILDER_URL }}$FIRMWARE_NAME\" target=\"_blank\">Click here</a>** to go to the web tools builder and flash the file \`$FIRMWARE_NAME\` to your ESP32 *(Ctrl/Cmd+Click for new tab)*" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
@@ -193,7 +193,7 @@ jobs:
           echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
           echo "1. **Download the artifact** named \`$FIRMWARE_NAME\` below. (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "2. **[$FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo "2. **[Download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "3. Use the [Teensy Loader application](https://www.pjrc.com/teensy/loader.html) to flash the \`$FIRMWARE_NAME\` file." >> $GITHUB_STEP_SUMMARY
+          echo "3. Use the **<a href=\"https://www.pjrc.com/teensy/loader.html\" target=\"_blank\">Teensy Loader application</a>** *(Ctrl/Cmd+Click for new tab)* to flash the \`$FIRMWARE_NAME\` file." >> $GITHUB_STEP_SUMMARY
 
