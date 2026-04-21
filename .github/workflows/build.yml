@@ -133,7 +133,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo 'OR' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo ""**[Click here to flash the firmware to your ESP32](${{ env.BUILDER_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
+          echo ""**[Click here to flash $FIRMWARE_NAME to your ESP32](${{ env.BUILDER_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
 
   build_teensy:
     needs: determine_mcu
