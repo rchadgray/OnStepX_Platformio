@@ -191,7 +191,7 @@ jobs:
           echo "Your custom firmware for **Teensy** named \`$FIRMWARE_NAME\` is ready." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
-          echo "1. **Download the artifact** named \`$FIRMWARE_NAME\` below. (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Download the firmware file** named \`$FIRMWARE_NAME\` below. (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "2. **[Download $FIRMWARE_NAME](${{ env.DOWNLOAD_URL }}$FIRMWARE_NAME)**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
