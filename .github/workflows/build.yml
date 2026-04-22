@@ -48,9 +48,12 @@ jobs:
           PINMAP=$(grep "^#define PINMAP" src/Config.h | awk '{print $3}')
           echo "pinmap=$PINMAP" >> $GITHUB_OUTPUT
           
-          if grep -E -q "^#define PINMAP[[:space:]]*(MaxPCB4|MiniPCB|MiniPCB2)" src/Config.h; then
-            echo "Target MCU is Teensy"
-            echo "mcu=teensy" >> $GITHUB_OUTPUT
+          if grep -E -q "^#define PINMAP[[:space:]]*(MaxPCB4)" src/Config.h; then
+            echo "Target MCU is Teensy 4.1"
+            echo "mcu=teensy41" >> $GITHUB_OUTPUT
+          elif grep -E -q "^#define PINMAP[[:space:]]*(MiniPCB|MiniPCB2)" src/Config.h; then
+            echo "Target MCU is Teensy 3.2"
+            echo "mcu=teensy32" >> $GITHUB_OUTPUT
           elif grep -q "^#define PINMAP[[:space:]]*MaxESP4" src/Config.h; then
             echo "Target MCU is ESP32"
             echo "mcu=esp32" >> $GITHUB_OUTPUT
@@ -136,7 +139,7 @@ jobs:
 
   build_teensy:
     needs: determine_mcu
-    if: needs.determine_mcu.outputs.mcu_target == 'teensy'
+    if: needs.determine_mcu.outputs.mcu_target == 'teensy41' || needs.determine_mcu.outputs.mcu_target == 'teensy32'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -165,13 +168,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade platformio
       - name: Build Teensy Firmware
-        run: pio run -e teensy41
+        run: pio run -e ${{ needs.determine_mcu.outputs.mcu_target }}
       - name: Prepare Artifact Files
         run: |
           mkdir -p release_files
           FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
           echo "FIRMWARE_NAME=$FIRMWARE_NAME" >> $GITHUB_ENV
-          cp .pio/build/teensy41/firmware.hex "release_files/$FIRMWARE_NAME"
+          cp .pio/build/${{ needs.determine_mcu.outputs.mcu_target }}/firmware.hex "release_files/$FIRMWARE_NAME"
 
       - name: Securely copy file to web server
         uses: appleboy/scp-action@v1.0.0
@@ -187,8 +190,10 @@ jobs:
       - name: Add Job Summary
         run: |
           FIRMWARE_NAME="${{ needs.determine_mcu.outputs.animal_name }}-firmware.hex"
+          MCU_NAME="${{ needs.determine_mcu.outputs.mcu_target }}"
+          if [ "$MCU_NAME" = "teensy41" ]; then DISPLAY_MCU="Teensy 4.1"; else DISPLAY_MCU="Teensy 3.2"; fi
           echo "### 🎉 Firmware Successfully Built!" >> $GITHUB_STEP_SUMMARY
-          echo "Your custom firmware for **Teensy** named \`$FIRMWARE_NAME\` is ready." >> $GITHUB_STEP_SUMMARY
+          echo "Your custom firmware for **$DISPLAY_MCU** named \`$FIRMWARE_NAME\` is ready." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### How to flash:" >> $GITHUB_STEP_SUMMARY
           echo "1. **Download the firmware file** named \`$FIRMWARE_NAME\` below. (this file will be deleted from the server in 4 hours)" >> $GITHUB_STEP_SUMMARY
